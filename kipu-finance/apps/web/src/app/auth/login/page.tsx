@@ -2,14 +2,24 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { api } from '../../../lib/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Iniciando sesión con:', email);
+    try {
+      const response = await api.post('/auth/signin', { email, password });
+      localStorage.setItem('token', response.data.access_token);
+      router.push('/dashboard/credit-cards');
+    } catch (err: any) {
+      setError('Correo o contraseña incorrectos.');
+    }
   };
 
   return (
@@ -19,6 +29,12 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-sky-400 mb-2">KIPU Finance</h1>
           <p className="text-slate-400 text-sm">Tu economía personal conectada como un quipu.</p>
         </div>
+
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl mb-6 text-center">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
