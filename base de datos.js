@@ -1,1 +1,0 @@
-export function getData(){return JSON.parse(localStorage.getItem("kipus"))||{};}
