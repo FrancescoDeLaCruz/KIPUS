@@ -1,0 +1,1 @@
+export default function Dashboard() { return <main><h1>KIPU Finance Dashboard</h1></main>; }

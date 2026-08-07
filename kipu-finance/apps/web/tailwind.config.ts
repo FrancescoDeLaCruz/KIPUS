@@ -1,0 +1,1 @@
+module.exports = { theme: { extend: { colors: { 'neon-blue': '#00d4ff' } } } };
