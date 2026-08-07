@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,12 +20,14 @@ model User {
   accounts     Account[]
   transactions Transaction[]
   budgets      Budget[]
+  creditCards  CreditCard[]
+  savingGoals  SavingGoal[]
 }
 
 model Account {
   id           String        @id @default(uuid())
-  name         String
-  type         String
+  name         String        // Ej: BCP, BBVA, Efectivo
+  type         String        // Ej: Ahorro, Corriente, Credito
   balance      Decimal       @default(0)
   userId       String
   user         User          @relation(fields: [userId], references: [id])
@@ -35,7 +40,7 @@ model Transaction {
   description String
   category    String
   date        DateTime @default(now())
-  type        String
+  type        String   // 'INCOME' o 'EXPENSE'
   userId      String
   user        User     @relation(fields: [userId], references: [id])
   accountId   String
@@ -50,4 +55,24 @@ model Budget {
   year     Int
   userId   String
   user     User    @relation(fields: [userId], references: [id])
+}
+
+model CreditCard {
+  id          String   @id @default(uuid())
+  name        String   // Ej: Visa BCP, Mastercard Interbank
+  creditLimit Decimal  // Línea de crédito total
+  closingDay  Int      // Día de corte (ej: 20)
+  dueDate     Int      // Día de pago (ej: 5)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model SavingGoal {
+  id            String    @id @default(uuid())
+  title         String    // Ej: Fondo de emergencia, Viaje
+  targetAmount  Decimal   // Meta total a ahorrar
+  currentAmount Decimal   @default(0) // Monto actual ahorrado
+  deadline      DateTime? // Fecha límite opcional
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
 }
